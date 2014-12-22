@@ -1,0 +1,32 @@
+--- realmd-0.14.5/service/realmd-pld.conf.orig	1970-01-01 01:00:00.000000000 +0100
++++ realmd-0.14.5/service/realmd-pld.conf	2014-12-22 22:24:22.914308162 +0100
+@@ -0,0 +1,19 @@
++# Distro specific overrides for PLD
++[paths]
++smb.conf = /etc/samba/smb.conf
++
++[samba-packages]
++samba-common = /usr/bin/net
++
++[winbind-packages]
++samba-winbind = /usr/sbin/winbindd
++samba-winbind = /usr/bin/wbinfo
++
++[sssd-packages]
++sssd = /usr/sbin/sssd
++
++[adcli-packages]
++adcli = /usr/sbin/adcli
++
++[ipa-packages]
++freeipa-client = /usr/sbin/ipa-client-install
+--- realmd-0.14.5/configure.ac.orig	2013-08-15 13:45:05.000000000 +0200
++++ realmd-0.14.5/configure.ac	2014-12-22 22:13:55.614334488 +0100
+@@ -27,6 +27,7 @@
+ 	AC_CHECK_FILE(/etc/redhat-release, [DISTRO="redhat"])
+ 	AC_CHECK_FILE(/etc/debian_version, [DISTRO="debian"])
+ 	AC_CHECK_FILE(/etc/SuSE-release, [DISTRO="suse"])
++	AC_CHECK_FILE(/etc/pld-release, [DISTRO="pld"])
+ 
+ 	# Not customized for these yet
+ 	dnl AC_CHECK_FILE(/etc/gentoo-release, [DISTRO="gentoo"])

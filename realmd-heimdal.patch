@@ -1,0 +1,109 @@
+--- realmd-0.14.5/service/realm-credential.h.orig	2013-05-02 14:28:20.000000000 +0200
++++ realmd-0.14.5/service/realm-credential.h	2014-12-21 20:31:06.884885895 +0100
+@@ -19,7 +19,7 @@
+ 
+ #include <gio/gio.h>
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ G_BEGIN_DECLS
+ 
+--- realmd-0.14.5/service/realm-kerberos.c.orig	2013-07-19 18:04:44.000000000 +0200
++++ realmd-0.14.5/service/realm-kerberos.c	2014-12-21 20:31:06.908219228 +0100
+@@ -31,7 +31,7 @@
+ #include "realm-provider.h"
+ #include "realm-settings.h"
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include <glib/gi18n.h>
+ #include <glib/gstdio.h>
+@@ -1067,7 +1067,7 @@ gboolean
+ realm_kerberos_flush_keytab (const gchar *realm_name,
+                              GError **error)
+ {
+-	char kt_name[MAX_KEYTAB_NAME_LEN];
++	char kt_name[1100];
+ 	krb5_error_code code;
+ 	krb5_keytab keytab;
+ 	krb5_context ctx;
+--- realmd-0.14.5/service/realm-kerberos.h.orig	2013-07-19 17:53:39.000000000 +0200
++++ realmd-0.14.5/service/realm-kerberos.h	2014-12-21 20:31:06.881552562 +0100
+@@ -19,7 +19,7 @@
+ 
+ #include <gio/gio.h>
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include "realm-dbus-generated.h"
+ #include "realm-disco.h"
+--- realmd-0.14.5/service/realm-kerberos-membership.h.orig	2013-05-02 14:28:20.000000000 +0200
++++ realmd-0.14.5/service/realm-kerberos-membership.h	2014-12-21 20:31:06.884885895 +0100
+@@ -19,7 +19,7 @@
+ 
+ #include <gio/gio.h>
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include "realm-credential.h"
+ #include "realm-dbus-generated.h"
+--- realmd-0.14.5/tools/realm-client.c.orig	2013-07-24 16:52:32.000000000 +0200
++++ realmd-0.14.5/tools/realm-client.c	2014-12-21 21:54:40.281342170 +0100
+@@ -25,7 +25,7 @@
+ #include <glib/gstdio.h>
+ #include <glib-unix.h>
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include <sys/socket.h>
+ 
+@@ -664,8 +664,10 @@ kinit_to_ccache (krb5_context krb5,
+ 	code = krb5_get_init_creds_opt_alloc (krb5, &options);
+ 	g_return_val_if_fail (code == 0, FALSE);
+ 
++#ifdef MIT_KRB
+ 	code = krb5_get_init_creds_opt_set_out_ccache (krb5, options, ccache);
+ 	g_return_val_if_fail (code == 0, FALSE);
++#endif
+ 
+ 	code = krb5_get_init_creds_password (krb5, &my_creds, principal, NULL,
+ 	                                     krb5_prompter_posix, 0, 0, NULL, options);
+@@ -972,7 +974,11 @@ lookup_ccache_credential (const gchar *r
+ 	                             KRB5_TGS_NAME, realm_name, NULL);
+ 	g_return_val_if_fail (code == 0, FALSE);
+ 
++#ifdef MIT_KRB
+ 	code = krb5_cc_select (krb5, server, &origin, &principal);
++#else
++	code = krb5_cc_cache_match (krb5, &principal, &origin);
++#endif
+ 
+ 	krb5_free_principal (krb5, server);
+ 	if (principal)
+--- realmd-0.14.5/tools/realm.c.orig	2013-08-14 17:21:53.000000000 +0200
++++ realmd-0.14.5/tools/realm.c	2014-12-21 20:31:06.834885897 +0100
+@@ -23,7 +23,7 @@
+ #include <glib/gi18n.h>
+ #include <glib-object.h>
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include <locale.h>
+ 
+--- realmd-0.14.5/tools/realm-discover.c.orig	2013-05-02 14:28:20.000000000 +0200
++++ realmd-0.14.5/tools/realm-discover.c	2014-12-21 20:31:06.861552564 +0100
+@@ -19,7 +19,7 @@
+ #include "realm-dbus-constants.h"
+ #include "realm-dbus-generated.h"
+ 
+-#include <krb5/krb5.h>
++#include <krb5.h>
+ 
+ #include <glib.h>
+ #include <glib/gstdio.h>
