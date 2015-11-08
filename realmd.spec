@@ -6,12 +6,12 @@
 Summary:	D-Bus service for configuring Kerberos and other online identities
 Summary(pl.UTF-8):	Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci
 Name:		realmd
-Version:	0.16.1
+Version:	0.16.2
 Release:	1
 License:	LGPL v2+
 Group:		Applications/System
 Source0:	http://www.freedesktop.org/software/realmd/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	050b87ca6bd1ed750f5b07fb458e3e85
+# Source0-md5:	f0dd50b80a6fb5c435ac01c68d732f31
 Patch0:		%{name}-pld.patch
 Patch1:		%{name}-heimdal.patch
 URL:		http://www.freedesktop.org/software/realmd/
@@ -45,7 +45,7 @@ Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci.
 %{!?with_krb5:%patch1 -p1}
 
 %build
-%{__aclocal}
+%{__aclocal} -I build/m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -73,10 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README internals/*
 %attr(755,root,root) %{_sbindir}/realm
-%dir %{_libdir}/realmd
-%attr(755,root,root) %{_libdir}/realmd/realmd
-%{_libdir}/realmd/realmd-defaults.conf
-%{_libdir}/realmd/realmd-distro.conf
+%dir %{_prefix}/lib/realmd
+%attr(755,root,root) %{_prefix}/lib/realmd/realmd
+%{_prefix}/lib/realmd/realmd-defaults.conf
+%{_prefix}/lib/realmd/realmd-distro.conf
 /etc/dbus-1/system.d/org.freedesktop.realmd.conf
 %{systemdunitdir}/realmd.service
 %{_datadir}/dbus-1/system-services/org.freedesktop.realmd.service
