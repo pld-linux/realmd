@@ -6,15 +6,15 @@
 Summary:	D-Bus service for configuring Kerberos and other online identities
 Summary(pl.UTF-8):	Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci
 Name:		realmd
-Version:	0.16.2
+Version:	0.16.3
 Release:	1
 License:	LGPL v2+
 Group:		Applications/System
-Source0:	http://www.freedesktop.org/software/realmd/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	f0dd50b80a6fb5c435ac01c68d732f31
+Source0:	https://www.freedesktop.org/software/realmd/releases/%{name}-%{version}.tar.gz
+# Source0-md5:	a8b3bf5692c4255298ae962a0c8813fa
 Patch0:		%{name}-pld.patch
 Patch1:		%{name}-heimdal.patch
-URL:		http://www.freedesktop.org/software/realmd/
+URL:		https://www.freedesktop.org/software/realmd/
 BuildRequires:	PackageKit-devel
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -60,9 +60,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# duplicate of it (both are empty anyway)
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 
 %find_lang %{name}
 
