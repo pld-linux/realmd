@@ -9,8 +9,8 @@
  
  G_BEGIN_DECLS
  
---- realmd-0.14.5/service/realm-kerberos.c.orig	2013-07-19 18:04:44.000000000 +0200
-+++ realmd-0.14.5/service/realm-kerberos.c	2014-12-21 20:31:06.908219228 +0100
+--- realmd-0.17.1/service/realm-kerberos.c.orig	2022-09-16 12:57:45.000000000 +0200
++++ realmd-0.17.1/service/realm-kerberos.c	2025-03-02 18:04:10.198432068 +0100
 @@ -31,7 +31,7 @@
  #include "realm-provider.h"
  #include "realm-settings.h"
@@ -20,7 +20,7 @@
  
  #include <glib/gi18n.h>
  #include <glib/gstdio.h>
-@@ -1067,7 +1067,7 @@ gboolean
+@@ -1082,7 +1082,7 @@ gboolean
  realm_kerberos_flush_keytab (const gchar *realm_name,
                               GError **error)
  {
@@ -29,6 +29,35 @@
  	krb5_error_code code;
  	krb5_keytab keytab;
  	krb5_context ctx;
+@@ -1142,12 +1142,11 @@ realm_kerberos_get_netbios_name_from_key
+ 	krb5_error_code code;
+ 	krb5_keytab keytab = NULL;
+ 	krb5_context ctx;
+-	krb5_kt_cursor cursor = NULL;
++	krb5_kt_cursor cursor;
+ 	krb5_keytab_entry entry;
+ 	krb5_principal realm_princ = NULL;
+ 	gchar *princ_name = NULL;
+ 	gchar *netbios_name = NULL;
+-	krb5_data *name_data;
+ 
+ 	code = krb5_init_context (&ctx);
+ 	if (code != 0) {
+@@ -1169,11 +1168,10 @@ realm_kerberos_get_netbios_name_from_key
+ 	if (code == 0) {
+ 		while (!krb5_kt_next_entry (ctx, keytab, &entry, &cursor) && netbios_name == NULL) {
+ 			if (krb5_realm_compare (ctx, realm_princ, entry.principal)) {
+-				name_data = krb5_princ_component (ctx, entry.principal, 0);
++				const char *name_data = krb5_principal_get_comp_string(ctx, entry.principal, 0);
+ 				if (name_data != NULL
+-				                && name_data->length > 0
+-				                && name_data->data[name_data->length - 1] == '$') {
+-					netbios_name = g_strndup (name_data->data, name_data->length - 1);
++				                && name_data[strlen(name_data) - 1] == '$') {
++					netbios_name = g_strdup (name_data);
+ 					if (netbios_name == NULL) {
+ 						code = krb5_kt_free_entry (ctx, &entry);
+ 						warn_if_krb5_failed (ctx, code);
 --- realmd-0.14.5/service/realm-kerberos.h.orig	2013-07-19 17:53:39.000000000 +0200
 +++ realmd-0.14.5/service/realm-kerberos.h	2014-12-21 20:31:06.881552562 +0100
 @@ -19,7 +19,7 @@

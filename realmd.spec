@@ -6,12 +6,13 @@
 Summary:	D-Bus service for configuring Kerberos and other online identities
 Summary(pl.UTF-8):	Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci
 Name:		realmd
-Version:	0.16.3
+Version:	0.17.1
 Release:	1
 License:	LGPL v2+
 Group:		Applications/System
-Source0:	https://www.freedesktop.org/software/realmd/releases/%{name}-%{version}.tar.gz
-# Source0-md5:	a8b3bf5692c4255298ae962a0c8813fa
+#Source0Download: https://gitlab.freedesktop.org/realmd/realmd/-/releases
+Source0:	https://gitlab.freedesktop.org/realmd/realmd/uploads/204d05bd487908ece2ce2705a01d2b26/%{name}-%{version}.tar.gz
+# Source0-md5:	1027e0e0b6b1a92b5aa8a8342acab3ed
 Patch0:		%{name}-pld.patch
 Patch1:		%{name}-heimdal.patch
 URL:		https://www.freedesktop.org/software/realmd/
@@ -33,6 +34,12 @@ BuildRequires:	xmlto
 Requires:	glib2 >= 1:2.36.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%if "%{_libexecdir}" == "%{_libdir}"
+%define		pkglibexecdir	%{_prefix}/lib/realmd
+%else
+%define		pkglibexecdir	%{_libexecdir}
+%endif
+
 %description
 D-Bus service for configuring Kerberos and other online identities.
 
@@ -50,6 +57,7 @@ Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci.
 %{__autoheader}
 %{__automake}
 %configure \
+	--libexecdir=%{pkglibexecdir} \
 	--disable-silent-rules \
 	--with-distro=pld \
 	--with-systemd-unit-dir=%{systemdunitdir}
@@ -71,7 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README internals/*
 %attr(755,root,root) %{_sbindir}/realm
 %dir %{_prefix}/lib/realmd
-%attr(755,root,root) %{_prefix}/lib/realmd/realmd
+%{pkglibexecdir}/realmd
 %{_prefix}/lib/realmd/realmd-defaults.conf
 %{_prefix}/lib/realmd/realmd-distro.conf
 /etc/dbus-1/system.d/org.freedesktop.realmd.conf
