@@ -41,8 +41,8 @@ Usługa D-Bus do konfigurowania Kerberosa i innych tożsamości w sieci.
 
 %prep
 %setup -q
-%patch0 -p1
-%{!?with_krb5:%patch1 -p1}
+%patch -P0 -p1
+%{!?with_krb5:%patch -P1 -p1}
 
 %build
 %{__aclocal} -I build/m4
