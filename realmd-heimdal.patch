@@ -109,7 +109,7 @@
 +#ifdef MIT_KRB
  	code = krb5_cc_select (krb5, server, &origin, &principal);
 +#else
-+	code = krb5_cc_cache_match (krb5, &principal, &origin);
++	code = krb5_cc_cache_match (krb5, principal, &origin);
 +#endif
  
  	krb5_free_principal (krb5, server);
